@@ -1,0 +1,81 @@
+
+@font-face {
+    font-family: "fuente";
+    src: url("./fonts/DeliusSwashCaps-Regular.ttf") format("woff2");
+}
+body{
+    background: linear-gradient(180deg, #fce6f6 57%, #b683cc 100%);
+    height: 140vh;
+}
+#encabezado{
+    display: flex;
+    justify-content: space-between;
+    
+}
+#login{
+    padding: 1vh;
+    background-color: #6F089F;
+    color: white;
+    width: 10vh;
+    height: 3vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    font-family: "julee";
+    font-size: 2vh;
+}
+#secciones{
+    gap: 1vh;
+    display: flex;
+    color: #6F089F;
+    font-family: fuente;
+    cursor: pointer;
+}
+
+.animeTitle{
+    color: #6F089F;
+    font-family: fuente;
+}
+#BestAnimeTitle{
+    color: #6F089F;
+    font-family:"Jim Nightshade";
+    text-align: center;
+    font-size: 6vh;
+}
+.animeInformation{
+    display: flex;
+    align-items: center;
+}
+.containerScore{
+    margin-left: 2vh;
+}
+.animeDescription{
+    font-family: fuente;
+    margin-right: 1vh;
+    margin-bottom: 0;
+
+}
+.score{
+    color: #6F089F;
+    font-family: fuente;
+    font-size: 3vh;
+}
+.container{
+    width: 80%;
+}
+.fullContainer{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1vh;
+}
+.container img{
+    border-radius: 10px;
+}
+.arrowContainer{
+    display: flex;
+}
+.arrow{
+    cursor: pointer;
+}
