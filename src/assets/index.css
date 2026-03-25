@@ -12,6 +12,24 @@ body{
     justify-content: space-between;
     
 }
+.moreInfoContainer{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.moreInfoContainer button{
+    width: 5rem;
+    height: 2rem;
+    background-color: #6F089F;
+    color:white;
+    border-radius: 10px;
+    cursor:pointer;
+    transition: 1s ease;
+}
+.moreInfoContainer button:hover{
+    background-color: white;
+    color:#6F089F;
+}
 #login{
     padding: 1vh;
     background-color: #6F089F;
