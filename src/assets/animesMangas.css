@@ -1,6 +1,45 @@
+@import "tailwindcss";
+
 @font-face {
     font-family: "fuente";
     src: url("./fonts/DeliusSwashCaps-Regular.ttf") format("truetype");
 }
+@font-face {
+    font-family: FuenteTextos;
+    src: url("./fonts/RobotoFlex-VariableFont_GRAD\,XOPQ\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf");
+}
+@layer components{
+    .underline-animation{
+        position: relative;
+    }
 
-@import "tailwindcss";
+    .underline-animation::after{
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+
+        width: 0%;
+        height: 2px;
+        background: black;
+
+        transition: width 0.3s ease;
+    }
+
+
+    .underline-animation:hover::after{
+        width: 100%;
+    }
+
+    .underline-animation.active::after{
+        width: 100%;
+    }
+
+    #categories:hover .underline-animation.active:not(:hover)::after{
+        width: 0%;
+    }
+}
+body{
+    background: linear-gradient(180deg, #fce6f6 57%, #b683cc 100%);
+}
+

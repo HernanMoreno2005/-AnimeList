@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Header, Anime, Manga } from "./home";
-import { AnimeUrl, Characters } from "./anime";
-
+import { AnimeUrl, Characters,RelatedEntries, Reviews } from "./anime";
  function App() {
   return (
     <BrowserRouter>
@@ -19,6 +18,8 @@ import { AnimeUrl, Characters } from "./anime";
           <>
           <AnimeUrl/>
           <Characters/>
+          <RelatedEntries/>
+          <Reviews/>
           </>
         } />
       </Routes>
