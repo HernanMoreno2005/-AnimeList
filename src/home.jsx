@@ -4,8 +4,13 @@ import image from "./assets/rightArrow.png";
 export function Header (){
     return(
      <header id="encabezado">
-        <div id="secciones">
-        <p>AnimelistLogo</p>  <p>Anime</p> <p>Manga</p><p> my list </p>
+        <div id="secciones" className="flex">
+        <Link to={`/`}>
+        <p>AnimelistLogo</p>  
+        </Link>
+        <p>Anime</p> 
+        <p>Manga</p>
+        <p> my list </p>
         </div>
         <button id="login"> Login </button>
      </header>
@@ -109,7 +114,12 @@ let manga = mangas[index];
                 onClick={nextManga}
                 />
                 </div>
-                <p className="score">Score: {manga.score}/10</p>  
+                 <div className="moreInfoContainer">
+                <p className="score">Score: {manga.score}/10</p>
+                <Link to={`/manga/${manga.mal_id}`}>
+                <button> more info</button>
+                </Link>
+                </div>
                 </div>
                 </div>
                 </div>
