@@ -3,9 +3,7 @@
     font-family: "fuente";
     src: url("./fonts/DeliusSwashCaps-Regular.ttf") format("woff2");
 }
-body{
-    background: linear-gradient(180deg, #fce6f6 57%, #b683cc 100%);
-}
+
 #encabezado{
     display: flex;
     justify-content: space-between;

@@ -1,16 +1,29 @@
 import {useEffect,useState} from "react";
 import { Link } from "react-router-dom";
 import image from "./assets/rightArrow.png";
+
+
 export function Header (){
+    const[showModal,setShowModal] = useState(false)
     return(
      <header id="encabezado">
         <div id="secciones" className="flex">
         <Link to={`/`}>
-        <p>AnimelistLogo</p>  
+        <p className="text-purple-600">AnimelistLogo</p>  
         </Link>
-        <p>Anime</p> 
-        <p>Manga</p>
-        <p> my list </p>
+        <div className="group">
+        <p onMouseEnter={() => setShowModal(true)} onMouseLeave={() => setShowModal(false)} className="hover:bg-white text-purple-600 group-hover:bg-white">Anime</p> 
+        {showModal &&(
+        <div  onMouseEnter={() => setShowModal(true)} onMouseLeave={() => setShowModal(false)} className="bg-white flex flex-col w-30 top-5 left-30 absolute">
+        <Link to={`/searchAnime`} className="w-full">
+        <span className="font-[fuente] font-bold text-purple-600 py-3 border-b-2 hover:bg-purple-600 hover:text-white">Search anime</span>
+        </Link>
+          <span className="font-[fuente] font-bold text-purple-600 py-3 hover:bg-purple-600 hover:text-white">Top Anime</span>
+        </div>
+        )}
+        </div>
+        <p className="text-purple-600">Manga</p>
+        <p className="text-purple-600"> my list </p>
         </div>
         <button id="login"> Login </button>
      </header>

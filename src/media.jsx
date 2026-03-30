@@ -97,17 +97,40 @@ export function MediaCharacters({ type }) {
 export function MediaRelations({ type }) {
   const { id } = useParams();
   const relations = useFetchJikan(type, id, "/relations") || [];
+  const hasPrequel = relations.some(r => r.relation === "Prequel");
+  const hasSequel = relations.some(r => r.relation === "Sequel");
+  const hasSideStory = relations.some(r => r.relation === "Side Story");
 
   const filterRelation = rel =>
     relations.filter(r => r.relation === rel);
 
   return (
     <div className="flex flex-col items-center justify-center">
-     
-      {["Prequel", "Sequel", "Side Story"].map(rel => (
+     <h2 className="font-bold font-[fuente] text-center text-3xl text-purple-600 my-5">Related Entries</h2>
+      <div className="flex gap-5">
+      {hasPrequel && hasSequel ?(
+      ["Prequel", "Sequel"].map(rel => (
+        filterRelation(rel).length > 0 && (
+          <div key={rel} className="">
+            <h2 className="text-center text-3xl text-balance text-purple-600 font-[fuente] my-5">{rel}</h2>
+            <div className="">
+            {filterRelation(rel).flatMap(r => r.entry).slice(0, 9).map(e => (
+              <MediaCard key={e.mal_id} id={e.mal_id} name={e.name} type={type} />
+            ))}
+          </div>
+          </div>
+        )
+      ))
+    ) :(
+    <div>
+      <h3 className="font-[fuenteTexto] font-bold text-center text-2xl"> This anime no have a prequel or sequels</h3>
+    </div>
+  )}
+  </div>
+   {hasSideStory &&(
+      ["Side Story"].map(rel => (
         filterRelation(rel).length > 0 && (
           <div key={rel}>
-            <h2 className="font-bold font-[fuente] text-center text-3xl text-purple-600 my-5">Related Entries</h2>
             <h2 className="text-center text-3xl text-purple-600 font-[fuente] my-5">{rel}</h2>
             <div className="grid grid-cols-3">
             {filterRelation(rel).flatMap(r => r.entry).slice(0, 9).map(e => (
@@ -116,9 +139,14 @@ export function MediaRelations({ type }) {
           </div>
           </div>
         )
-      ))}
+      ))
+   )}
+      
     </div>
   );
+
+ 
+
 }
 
 
@@ -144,7 +172,6 @@ export function MediaReviews({ type }) {
       <h2 className="text-4xl text-center text-purple-600 font-[fuente] my-5">
         Reviews
       </h2>
-
       <div id="categories" className="flex justify-end">
         <p
           className={`underline-animation cursor-pointer text-end text-purple-600 text-2xl font-[fuente] ${
@@ -173,24 +200,28 @@ function SearchMediaReviews({ note, type }) {
   const { id } = useParams();
   const [reviews, setReviews] = useState([]);
 
-  useEffect(() => {
+useEffect(() => {
+  const timeout = setTimeout(() => {
     const getReviews = async () => {
-      const res = await fetch(
-        `https://api.jikan.moe/v4/${type}/${id}/reviews`
-      );
-      const data = await res.json();
-      setReviews(data.data);
-    };
-    getReviews();
-  }, [id, type]);
+      try {
+        const res = await fetch(
+          `https://api.jikan.moe/v4/${type}/${id}/reviews`
+        )
 
-  if (reviews.length === 0) {
-    return (
-      <p className="font-bold text-center font-[fuenteTexto] text-2xl">
-        No found reviews
-      </p>
-    );
-  }
+        const data = await res.json()
+
+        setReviews(data.data || [])
+      } catch (error) {
+        console.error(error)
+        setReviews([])
+      }
+    }
+
+    getReviews()
+  }, 400) 
+
+  return () => clearTimeout(timeout)
+}, [id, type])
 
   const sortedReviews = [...reviews];
 
