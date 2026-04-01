@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Header, Anime, Manga } from "./home";
 import { MediaPage, MediaCharacters, MediaRelations, MediaReviews } from "./media";
-import {Input} from "./search"
+import {Input, Genres,Themes} from "./search"
+import {GenresThemes} from "./type"
  function App() {
   return (
     <BrowserRouter>
@@ -40,7 +41,21 @@ import {Input} from "./search"
       <Route path="/searchAnime" element={
       <div className="bg-[linear-gradient(180deg,_#fce6f6_57%,_#b683cc_100%)]">
       <Input/>
+      <Genres type="anime"/>
+      <Themes/>
       </div>
+      }
+      />
+      <Route path="/:type/Genre/:id/:name" element={
+        <>
+        <GenresThemes/>
+        </>
+      }
+      />
+      <Route path="/Theme/:id" element={
+        <>
+        <GenresThemes  type={"theme"}/>
+        </>
       }
       />
       </Routes>

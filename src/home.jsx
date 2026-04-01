@@ -1,35 +1,54 @@
 import {useEffect,useState} from "react";
-import { Link } from "react-router-dom";
+import { useParams,Link } from "react-router-dom";
 import image from "./assets/rightArrow.png";
 
-
 export function Header (){
-    const[showModal,setShowModal] = useState(false)
-    return(
-     <header id="encabezado">
-        <div id="secciones" className="flex">
-        <Link to={`/`}>
-        <p className="text-purple-600">AnimelistLogo</p>  
-        </Link>
-        <div className="group">
-        <p onMouseEnter={() => setShowModal(true)} onMouseLeave={() => setShowModal(false)} className="hover:bg-white text-purple-600 group-hover:bg-white">Anime</p> 
-        {showModal &&(
-        <div  onMouseEnter={() => setShowModal(true)} onMouseLeave={() => setShowModal(false)} className="bg-white flex flex-col w-30 top-5 left-30 absolute">
-        <Link to={`/searchAnime`} className="w-full">
-        <span className="font-[fuente] font-bold text-purple-600 py-3 border-b-2 hover:bg-purple-600 hover:text-white">Search anime</span>
-        </Link>
-          <span className="font-[fuente] font-bold text-purple-600 py-3 hover:bg-purple-600 hover:text-white">Top Anime</span>
-        </div>
-        )}
-        </div>
-        <p className="text-purple-600">Manga</p>
-        <p className="text-purple-600"> my list </p>
-        </div>
-        <button id="login"> Login </button>
-     </header>
-    )
-}
+  const [showModal, setShowModal] = useState(false)
 
+  return (
+    <header id="encabezado" className="border-b-3 border-purple-600 p-3">
+      <div id="secciones" className="flex relative items-center">
+
+        <Link to={`/`}>
+          <p className="text-purple-600">AnimelistLogo</p>  
+        </Link>
+
+        <div
+          className="relative"
+          onMouseEnter={() => setShowModal(true)}
+          onMouseLeave={() => setShowModal(false)}
+        >
+          <p className="text-purple-600 px-4 py-2 hover:bg-white cursor-pointer">
+            Anime
+          </p>
+
+          {showModal && (
+            <div className="absolute top-full left-0 bg-white flex flex-col w-40 shadow-md">
+
+              <Link
+                to={`/searchAnime`}
+                className="block font-[fuente] font-bold text-purple-600 py-3 px-4 border-b hover:bg-purple-600 hover:text-white"
+              >
+                Search anime
+              </Link>
+
+              <span className="block font-[fuente] font-bold text-purple-600 py-3 px-4 hover:bg-purple-600 hover:text-white">
+                Top Anime
+              </span>
+
+            </div>
+          )}
+        </div>
+
+        <p className="text-purple-600 px-4">Manga</p>
+        <p className="text-purple-600 px-4">my list</p>
+
+      </div>
+
+      <button id="login">Login</button>
+    </header>
+  )
+}
 
 export  function Anime(){
   const[animes,setAnimes] = useState([]);
@@ -72,7 +91,7 @@ let anime = animes[index];
                 />
                 </div>
                 <div className="moreInfoContainer">
-                <p className="score">Score: {anime.score}/10</p>
+                <p className="score">Score: {anime.score}⭐</p>
                 <Link to={`/anime/${anime.mal_id}`}>
                 <button> more info</button>
                 </Link>
@@ -128,7 +147,7 @@ let manga = mangas[index];
                 />
                 </div>
                  <div className="moreInfoContainer">
-                <p className="score">Score: {manga.score}/10</p>
+                <p className="score">Score: {manga.score}⭐</p>
                 <Link to={`/manga/${manga.mal_id}`}>
                 <button> more info</button>
                 </Link>

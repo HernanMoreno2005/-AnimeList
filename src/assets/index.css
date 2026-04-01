@@ -4,6 +4,30 @@
     src: url("./fonts/DeliusSwashCaps-Regular.ttf") format("woff2");
 }
 
+
+body::-webkit-scrollbar {
+  width: 12px; 
+  height: 8px; 
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #9333ea; 
+  border-radius: 9999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  height: 7px; 
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #9333ea; 
+  border-radius: 9999px;
+}
+
 #encabezado{
     display: flex;
     justify-content: space-between;
