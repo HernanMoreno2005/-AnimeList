@@ -101,7 +101,7 @@ export function Genres({type}) {
         {genres.map(genre => (
           <Link
             key={genre.mal_id}
-            to={`/${type}/Genre/${genre.mal_id}/${genre.name}`}
+            to={`/${type}/Genre/${genre.mal_id}/${genre.name}?page=1`}
             className="font-[fuenteTexto] font-bold bg-gradient-to-r from-fuchsia-600 to-purple-600 p-3 w-90 text-center text-white rounded-2xl text-2xl border-4 border-black hover:border-white"
           >
             {genre.name}
