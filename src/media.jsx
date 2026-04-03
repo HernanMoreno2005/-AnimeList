@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-
+import "./assets/animesMangas.css";
 
 function useFetchJikan(type, id, extra = "") {
   const [data, setData] = useState(null);
@@ -189,24 +189,24 @@ export function MediaReviews({ type }) {
       Reviews
       </h2>
       <div id="categories" className="flex ml-auto">
-        <p
-          className={`underline-animation cursor-pointer text-end text-purple-600 text-2xl font-[fuente] ${
-            noteReviews ? "active" : ""
-          }`}
-          onClick={() => setNote(true)}
-        >
-          BestScore
-        </p>
-
-        <p
-          className={`underline-animation cursor-pointer text-end text-purple-600 text-2xl font-[fuente] mr-3 ${
-            noteReviews ? "" : "active"
-          }`}
-          onClick={() => setNote(false)}
-        >
-          /WorstScore
-        </p>
-      </div>
+  <p
+    className={`hand-underline text-2xl font-[fuente] text-purple-600 mr-3 ${
+      noteReviews ? "active" : ""
+    }`}
+    onClick={() => setNote(true)}
+  >
+    BestScore
+  </p>
+  <p className="text-2xl font-[fuente] text-purple-600 mr-2"> / </p>
+  <p
+    className={`hand-underline text-2xl font-[fuente] text-purple-600 ${
+      noteReviews ? "" : "active"
+    }`}
+    onClick={() => setNote(false)}
+  >
+  WorstScore
+  </p>
+</div>
       </div>
       <SearchMediaReviews note={noteReviews} type={type} reviews={reviews} setReviews={setReviews} />
     </div>

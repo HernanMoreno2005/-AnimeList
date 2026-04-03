@@ -112,7 +112,7 @@ export function Genres({type}) {
   )
 }
 
-export function Themes() {
+export function Themes({type}) {
   const [themes, setThemes] = useState([])
 
   useEffect(() => {
@@ -134,7 +134,7 @@ export function Themes() {
         {themes.map(theme => (
           <Link
             key={theme.mal_id}
-            to={`/Theme/${theme.mal_id}`}
+            to={`/${type}/Theme/${theme.mal_id}/${theme.name}?page=1`}
             className="font-[fuenteTexto] font-bold bg-gradient-to-r from-fuchsia-600 to-purple-600 p-3 w-90 text-center text-white rounded-2xl text-2xl border-4 border-black hover:border-white"
           >
             {theme.name}

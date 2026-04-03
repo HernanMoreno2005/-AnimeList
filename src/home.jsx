@@ -23,7 +23,7 @@ export function Header (){
           </p>
 
           {showModal && (
-            <div className="absolute top-full left-0 bg-white flex flex-col w-40 shadow-md">
+            <div className="absolute top-full left-0 bg-white flex flex-col w-40 shadow-md z-50">
 
               <Link
                 to={`/searchAnime`}

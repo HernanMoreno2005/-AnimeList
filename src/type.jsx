@@ -1,9 +1,12 @@
-import { useState, useEffect, use } from "react"
-import { Link, useParams,useSearchParams} from "react-router-dom"
+import { useState, useEffect, Fragment } from "react"
+import { Menu, Transition } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { generatePath, Link, useParams,useSearchParams} from "react-router-dom"
 import flechaIzquierda from "./assets/flechaIzquierda.png";
 import flechaDerecha from "./assets/flechaDerecha.png";
 import flechaIzquierdaHover from "./assets/flechaIzquierdaHover.png";
 import flechaDerechaHover from "./assets/flechaDerechaHover.png";
+import Tilt from "react-parallax-tilt";
 export function GenresThemes() {
   const [list, setList] = useState([]);
   const [lastPage, setLastPage] = useState(1);
@@ -13,9 +16,13 @@ export function GenresThemes() {
   const [searchParams] = useSearchParams();
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
 
+  const [order,setOrder] = useState("Members");
+
+  let url = `https://api.jikan.moe/v4/${type}?genres=${id}&order_by=${order}&sort=desc&limit=25&page=${page}`;
+
   useEffect(() => {
     const timeout = setTimeout(() => {
-      fetch(`https://api.jikan.moe/v4/anime?genres=${id}&order_by=score&sort=desc&limit=25&page=${page}`)
+      fetch(url)
         .then(res => res.json())
         .then(res => {
           setList(res.data);
@@ -24,53 +31,144 @@ export function GenresThemes() {
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [id, page]);
+  }, [id, page,order]);
 
   return (
     <div>
-      <h1 className="text-center font-[fuente] text-4xl text-purple-600 mt-auto mb-3">
+      <div id="titleContainer" className="w-full h-10 flex justify-end text-2xl text-purple-600  font-[fuente] items-center">
+      <h1 className=" absolute left-1/2 -translate-x-1/2 text-center font-[fuente] text-4xl text-purple-600 mt-auto">
         {name}
       </h1>
+      <p>order by</p>
+      <Menu as="div" className="relative inline-block text-left">
+  <Menu.Button className="inline-flex items-center gap-2 rounded-xl 
+  bg-purple-600 px-4 py-2 text-sm font-[fuente] text-white
+  shadow-[0_0_10px_rgba(139,92,246,0.5)]
+  hover:bg-purple-500 transition focus:outline-none">
+
+    {order === "Members" ? "Members" : "Score"}
+
+    <ChevronDownIcon className="w-5 h-5 text-purple-200" />
+  </Menu.Button>
+
+  <Transition
+    as={Fragment}
+    enter="transition ease-out duration-100"
+    enterFrom="opacity-0 scale-95"
+    enterTo="opacity-100 scale-100"
+    leave="transition ease-in duration-75"
+    leaveFrom="opacity-100 scale-100"
+    leaveTo="opacity-0 scale-95"
+  >
+    <Menu.Items className="absolute right-0 mt-2 w-50 origin-top-right  z-50
+    rounded-xl bg-purple-600/90
+    border border-white/10
+    shadow-[0_0_15px_rgba(139,92,246,0.4)]
+    focus:outline-none">
+
+      <div className="p-1">
+
+        <Menu.Item>
+          {({ active }) => (
+            <button
+              onClick={() => setOrder("Members")}
+              className={`${
+                active ? "bg-purple-500 text-white" : "text-white/80"
+              } group flex w-full items-center rounded-lg px-3 py-2 text-2x1 transition`}
+            >
+               Members👥
+               
+            </button>
+          )}
+        </Menu.Item>
+
+
+        <Menu.Item>
+          {({ active }) => (
+            <button
+              onClick={() => setOrder("Score")}
+              className={`${
+                active ? "bg-purple-500 text-white" : "text-white/80"
+              } group flex w-full items-center rounded-lg px-3 py-2 text-2x1 transition`}
+            >
+               Score⭐
+            </button>
+          )}
+        </Menu.Item>
+
+      </div>
+    </Menu.Items>
+  </Transition>
+</Menu>
+      </div>
       <div className="flex justify-center">
         <div className="grid grid-cols-5">
           {list.map(l => (
-            <div key={l.mal_id} className="flex flex-col items-center mb-5 border m-4 border-gray-400 h-11/12 rounded-2xl">
+            
+            <Tilt
+              key={l.mal_id}
+              tiltMaxAngleX={3}
+              tiltMaxAngleY={3}
+              transitionSpeed={1200}
+              className="m-4"
+            >
+             <div className="relative group h-full rounded-2xl p-[1px] bg-white">
 
-              <h2 className="font-[fuente] text-purple-600 text-2xl text-center max-w-full overflow-x-auto whitespace-nowrap scrollbar-thin overflow-y-hidden p-2">
-                {l.title}
-              </h2>
 
-              <div className="flex gap-2 flex-wrap mt-3">
-                {l.genres?.map(g => (
-                  <span className="font-[fuenteTexto]" key={g.mal_id}>
-                    {g.name}
-                  </span>
-                ))}
-              </div>
+  <div className="absolute inset-0 rounded-2xl group-hover:opacity-100 transition duration-500"></div>
 
-              <img src={l.images.jpg.image_url} className="h-48 mt-auto mb-3" />
 
-              <p className="text-2xl font-[fuenteTexto]">
-                Score: {l.score ?? "N/A"} ⭐
-              </p>
+  <div className="relative flex flex-col items-center h-full rounded-2xl p-2 border border-white/10
+  shadow-[0_0_10px_rgba(255,255,255,0.05),0_0_30px_rgba(139,92,246,0.4)]">
 
-              <p className="text-center font-[fuenteTexto] max-h-30 overflow-y-auto">
-                {l.synopsis}
-              </p>
+    <h2 className="font-[fuente] text-2xl text-center max-w-full overflow-x-auto whitespace-nowrap scrollbar-thin overflow-y-hidden p-2">
+      {l.title}
+    </h2>
 
-              <div className="mt-auto mb-3">
-                <Link
-                  to={`/${type}/${l.mal_id}`}
-                  className="bg-purple-600 text-white rounded-2xl m-5 p-3 border-4 border-black hover:bg-white hover:text-purple-600 hover:border-gray-400 font-[fuente]"
-                >
-                  More Info
-                </Link>
+    <div className="flex gap-2 flex-wrap mt-3">
+      {l.genres?.map(g => (
+        <span className="font-[fuenteTexto] " key={g.mal_id}>
+          {g.name}
+        </span>
+      ))}
+    </div>
 
-                <button className="font-[fuente] bg-purple-600 text-white w-30 rounded-2xl mt-2 p-2.5 border-4 border-black hover:border-gray-400 hover:bg-white hover:text-purple-600">
-                  Add MyList
-                </button>
-              </div>
-            </div>
+    <img
+      src={l.images.jpg.image_url}
+      className="h-48 mt-auto mb-3 rounded-lg"
+    />
+
+    <div className="flex flex-col items-center">
+      <p className="text-2xl font-[fuenteTexto]">
+        Score: {l.score ?? "N/A"} ⭐
+      </p>
+      <p className="text-2xl font-[fuenteTexto]">
+        Members: {l.members.toLocaleString()} 👥
+      </p>
+    </div>
+
+    <p className="text-center font-[fuenteTexto] max-h-30 overflow-y-auto ">
+      {l.synopsis}
+    </p>
+
+    <div className="mt-auto mb-3 flex items-center gap-2">
+      <Link
+        to={`/${type}/${l.mal_id}`}
+        className="font-[fuente] bg-white text-purple-600 w-30 rounded-2xl mt-2 p-2.5 
+        hover:bg-purple-200 transition text-center"
+      >
+        More Info
+      </Link>
+
+      <button className="font-[fuente] cursor-pointer bg-white text-purple-600 w-30 rounded-2xl mt-2 p-2.5 
+      hover:bg-purple-200 transition">
+        Add MyList
+      </button>
+    </div>
+  </div>
+</div>
+            </Tilt>
+
           ))}
         </div>
       </div>
@@ -79,7 +177,6 @@ export function GenresThemes() {
     </div>
   );
 }
-
 
 export function Pagination({ lastPage, page }) {
   const [searchParams, setSearchParams] = useSearchParams();

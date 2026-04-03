@@ -9,35 +9,30 @@
     src: url("./fonts/RobotoFlex-VariableFont_GRAD\,XOPQ\,XTRA\,YOPQ\,YTAS\,YTDE\,YTFI\,YTLC\,YTUC\,opsz\,slnt\,wdth\,wght.ttf");
 }
 @layer components{
-    .underline-animation{
-        position: relative;
-    }
+.hand-underline {
+  position: relative;
+  display: inline-block;
+  font-weight: bold;
+  color: #6b21a8; 
+  cursor: pointer;
+}
 
-    .underline-animation::after{
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -2px;
+.hand-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0.1em;
+  width: 0%;
+  height: 4px;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 10"><path d="M0 5 Q50 0 100 5" stroke= "black" stroke-width="2" fill="transparent"/></svg>') repeat-x;
+  background-size: contain;
+  transition: width 0.5s ease-in-out;
+}
 
-        width: 0%;
-        height: 2px;
-        background: black;
 
-        transition: width 0.3s ease;
-    }
-
-
-    .underline-animation:hover::after{
-        width: 100%;
-    }
-
-    .underline-animation.active::after{
-        width: 100%;
-    }
-
-    #categories:hover .underline-animation.active:not(:hover)::after{
-        width: 0%;
-    }
+.hand-underline.active::after {
+  width: 100%;
+}
 }
 body{
     background: linear-gradient(180deg, #fce6f6 57%, #b683cc 100%);

@@ -42,7 +42,7 @@ import {GenresThemes} from "./type"
       <div className="bg-[linear-gradient(180deg,_#fce6f6_57%,_#b683cc_100%)]">
       <Input/>
       <Genres type="anime"/>
-      <Themes/>
+      <Themes type="anime"/>
       </div>
       }
       />
@@ -52,9 +52,9 @@ import {GenresThemes} from "./type"
         </>
       }
       />
-      <Route path="/Theme/:id" element={
+      <Route path="/:type/Theme/:id/:name" element={
         <>
-        <GenresThemes  type={"theme"}/>
+        <GenresThemes/>
         </>
       }
       />
