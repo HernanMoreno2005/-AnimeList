@@ -120,7 +120,17 @@ export function GenresThemes() {
 
   <div className="relative flex flex-col items-center h-full rounded-2xl p-2 border border-white/10
   shadow-[0_0_10px_rgba(255,255,255,0.05),0_0_30px_rgba(139,92,246,0.4)]">
-
+ <div
+  className={`absolute top-2 right-2 z-10 
+  ${getRankColor(l.rank)}
+  text-sm font-bold 
+  px-3 py-1 rounded-full
+  shadow-[0_0_10px_rgba(0,0,0,0.3)]
+  transition-all duration-300
+  group-hover:opacity-0`}
+>
+  #{l.rank ?? "?"} 🌍
+</div>
     <h2 className="font-[fuente] text-2xl text-center max-w-full overflow-x-auto whitespace-nowrap scrollbar-thin overflow-y-hidden p-2">
       {l.title}
     </h2>
@@ -143,6 +153,13 @@ export function GenresThemes() {
         Score: {l.score ?? "N/A"} ⭐
       </p>
       <p className="text-2xl font-[fuenteTexto]">
+       {
+          type === "anime"
+            ? `Episodes: ${l.episodes ?? "???"} 📺​`
+            : `Chapters: ${l.chapters ?? "???"}  📖​`
+       }
+      </p>
+      <p className="text-2xl font-[fuenteTexto]">
         Members: {l.members.toLocaleString()} 👥
       </p>
     </div>
@@ -154,13 +171,13 @@ export function GenresThemes() {
     <div className="mt-auto mb-3 flex items-center gap-2">
       <Link
         to={`/${type}/${l.mal_id}`}
-        className="font-[fuente] bg-white text-purple-600 w-30 rounded-2xl mt-2 p-2.5 
+        className="font-[fuente] bg-white text-purple-600 w-30 rounded-2xl mt-2 p-2.5 border-black border-2
         hover:bg-purple-200 transition text-center"
       >
         More Info
       </Link>
 
-      <button className="font-[fuente] cursor-pointer bg-white text-purple-600 w-30 rounded-2xl mt-2 p-2.5 
+      <button className="font-[fuente] cursor-pointer bg-white text-purple-600 w-30 rounded-2xl mt-2 p-2.5 border-black border-2
       hover:bg-purple-200 transition">
         Add MyList
       </button>
@@ -249,4 +266,11 @@ return (
 
     </div>
   );
+}
+function getRankColor(rank) {
+  if (rank === 1) return "bg-yellow-400 text-black"; 
+  if (rank === 2) return "bg-gray-300 text-black";   
+  if (rank === 3) return "bg-amber-600 text-white";  
+
+  return "bg-purple-600 text-white"; 
 }

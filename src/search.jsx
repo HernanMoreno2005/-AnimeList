@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom"
 export function Input() {
   const [query, setQuery] = useState("")
   const [results, setResults] = useState([])
-
+  const {type} = useParams();
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (query.length < 3) {
@@ -15,7 +15,7 @@ export function Input() {
       const fetchData = async () => {
         try {
           const res = await fetch(
-            `https://api.jikan.moe/v4/anime?q=${query}&limit=20`
+            `https://api.jikan.moe/v4/${type}?q=${query}&limit=20`
           )
 
           const data = await res.json()
@@ -36,12 +36,12 @@ export function Input() {
   return (
     <div className="flex justify-center flex-col items-center relative">
       
-      <h1 className="font-[fuente] text-purple-600 font-bold text-3xl">
-        Anime Search
+      <h1 className="font-[fuente] text-purple-600 font-bold text-3xl f capitalize ">
+        {type} Search
       </h1>
 
       <input
-        placeholder="search anime..."
+        placeholder={`search ${type}...`}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="w-3xl bg-gray-200 border-solid border-white border-4 rounded-[10px] p-5 mt-5"
@@ -53,7 +53,7 @@ export function Input() {
           {results.map((anime) => (
             <Link
               key={anime.mal_id}
-              to={`/anime/${anime.mal_id}`}
+              to={`/${type}/${anime.mal_id}`}
               className="flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer"
             >
               <img
@@ -76,7 +76,7 @@ export function Genres({type}) {
   const [genres, setGenres] = useState([])
   const typeGenre = "Genre";
   useEffect(() => {
-    fetch("https://api.jikan.moe/v4/genres/anime")
+    fetch(`https://api.jikan.moe/v4/genres/${type}`)
       .then(res => res.json())
       .then(data => {
         if (!data.data) return
@@ -116,7 +116,7 @@ export function Themes({type}) {
   const [themes, setThemes] = useState([])
 
   useEffect(() => {
-    fetch("https://api.jikan.moe/v4/genres/anime?filter=themes")
+    fetch(`https://api.jikan.moe/v4/genres/${type}?filter=themes`)
       .then(res => res.json())
       .then(data => {
         if (!data.data) return
@@ -143,4 +143,15 @@ export function Themes({type}) {
       </div>
     </div>
   )
+}
+export function SearchPage() {
+  const { type } = useParams();
+
+  return (
+    <div className="bg-[linear-gradient(180deg,_#fce6f6_57%,_#b683cc_100%)]">
+      <Input />
+      <Genres type={type} />
+      <Themes type={type} />
+    </div>
+  );
 }

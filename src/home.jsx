@@ -4,7 +4,7 @@ import image from "./assets/rightArrow.png";
 
 export function Header (){
   const [showModal, setShowModal] = useState(false)
-
+  const [showModalManga, setShowModalManga] = useState(false);
   return (
     <header id="encabezado" className="border-b-3 border-purple-600 p-3">
       <div id="secciones" className="flex relative items-center">
@@ -26,7 +26,7 @@ export function Header (){
             <div className="absolute top-full left-0 bg-white flex flex-col w-40 shadow-md z-50">
 
               <Link
-                to={`/searchAnime`}
+                to={`/search/anime`}
                 className="block font-[fuente] font-bold text-purple-600 py-3 px-4 border-b hover:bg-purple-600 hover:text-white"
               >
                 Search anime
@@ -40,7 +40,32 @@ export function Header (){
           )}
         </div>
 
-        <p className="text-purple-600 px-4">Manga</p>
+        <div
+          className="relative"
+          onMouseEnter={() => setShowModalManga(true)}
+          onMouseLeave={() => setShowModalManga(false)}
+        >
+          <p className="text-purple-600 px-4 py-2 hover:bg-white cursor-pointer">
+            Manga
+          </p>
+
+          {showModalManga && (
+            <div className="absolute top-full left-0 bg-white flex flex-col w-40 shadow-md z-50">
+
+              <Link
+                to={`/search/manga`}
+                className="block font-[fuente] font-bold text-purple-600 py-3 px-4 border-b hover:bg-purple-600 hover:text-white"
+              >
+                Search Manga
+              </Link>
+
+              <span className="block font-[fuente] font-bold text-purple-600 py-3 px-4 hover:bg-purple-600 hover:text-white">
+                Top Manga
+              </span>
+
+            </div>
+          )}
+        </div>
         <p className="text-purple-600 px-4">my list</p>
 
       </div>
