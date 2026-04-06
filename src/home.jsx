@@ -31,10 +31,12 @@ export function Header (){
               >
                 Search anime
               </Link>
-
-              <span className="block font-[fuente] font-bold text-purple-600 py-3 px-4 hover:bg-purple-600 hover:text-white">
-                Top Anime
-              </span>
+              <Link
+              to={`/top/anime`}
+                className="block font-[fuente] font-bold text-purple-600 py-3 px-4 border-b hover:bg-purple-600 hover:text-white">
+              Top anime
+              </Link>
+              
 
             </div>
           )}
@@ -58,10 +60,12 @@ export function Header (){
               >
                 Search Manga
               </Link>
-
-              <span className="block font-[fuente] font-bold text-purple-600 py-3 px-4 hover:bg-purple-600 hover:text-white">
-                Top Manga
-              </span>
+             <Link
+              to={`/top/manga`}
+                className="block font-[fuente] font-bold text-purple-600 py-3 px-4 border-b hover:bg-purple-600 hover:text-white">
+              Top Manga
+              </Link>
+              
 
             </div>
           )}

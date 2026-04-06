@@ -7,49 +7,94 @@ import flechaDerecha from "./assets/flechaDerecha.png";
 import flechaIzquierdaHover from "./assets/flechaIzquierdaHover.png";
 import flechaDerechaHover from "./assets/flechaDerechaHover.png";
 import Tilt from "react-parallax-tilt";
-export function GenresThemes() {
+export function GenresThemes({top}) {
   const [list, setList] = useState([]);
   const [lastPage, setLastPage] = useState(1);
-
-  const { id, name, type } = useParams();
-
+  const [status,setStatus] = useState("any");
   const [searchParams] = useSearchParams();
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
-
   const [order,setOrder] = useState("Members");
+  let id,name,type;
+  
+  let url;
+  if(!top){
+    ({ id, name, type } = useParams());
+    if(status != "any"){
+      url = `https://api.jikan.moe/v4/${type}?status=${status}&genres=${id}&order_by=${order}&sort=desc&limit=25&page=${page}`;
+    }
+    else{
+      url = `https://api.jikan.moe/v4/${type}?genres=${id}&order_by=${order}&sort=desc&limit=25&page=${page}`;
+    }
+  }
+  else{
+    ({type} = useParams());
+    name = "Top " + type;
+    if(status != "any"){
+     url= `https://api.jikan.moe/v4/${type}?status=${status}&order_by=${order}&sort=desc&limit=25&page=${page}`;
+    }
+    else{
+     url = `https://api.jikan.moe/v4/${type}?order_by=${order}&sort=desc&limit=25&page=${page}`;
+    }
+    
+  }
+   const labels = {
+  Members: "Members",
+  Score: "Score",
+  Episodes: "Episodes",
+  Chapters: "Chapters",
+};
 
-  let url = `https://api.jikan.moe/v4/${type}?genres=${id}&order_by=${order}&sort=desc&limit=25&page=${page}`;
-
+const label =
+  order === "Members"
+    ? "Members"
+    : order === "Score"
+    ? "Score"
+    : order === "Episodes"
+    ? "Episodes"
+    : order === "Chapters"
+    ? "Chapters"
+    : "Score";
+    useEffect(() => {
+  setStatus("any");
+  setOrder("members"); 
+}, [type]);
   useEffect(() => {
+    setList([]);
     const timeout = setTimeout(() => {
       fetch(url)
         .then(res => res.json())
         .then(res => {
-          setList(res.data);
-          setLastPage(res.pagination.last_visible_page);
-        });
+  const unique = Array.from(
+    new Map(res.data.map(item => [item.mal_id, item])).values()
+  );
+
+  setList(unique);
+  setLastPage(res.pagination.last_visible_page);
+});
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [id, page,order]);
+  }, [id, page,order,status,type,url]);
 
   return (
     <div>
-      <div id="titleContainer" className="w-full h-10 flex justify-end text-2xl text-purple-600  font-[fuente] items-center">
+      <div id="titleContainer" className="w-full  flex justify-end text-2xl text-purple-600  font-[fuente] items-center">
       <h1 className=" absolute left-1/2 -translate-x-1/2 text-center font-[fuente] text-4xl text-purple-600 mt-auto">
         {name}
       </h1>
-      <p>order by</p>
-      <Menu as="div" className="relative inline-block text-left">
+      <div className="flex flex-col items-center">
+      <div className="flex gap-2 my-3">
+      <p>Order by</p>
+  <Menu as="div" className=" inline-block text-left">
   <Menu.Button className="inline-flex items-center gap-2 rounded-xl 
   bg-purple-600 px-4 py-2 text-sm font-[fuente] text-white
   shadow-[0_0_10px_rgba(139,92,246,0.5)]
   hover:bg-purple-500 transition focus:outline-none">
 
-    {order === "Members" ? "Members" : "Score"}
+  {label}
 
-    <ChevronDownIcon className="w-5 h-5 text-purple-200" />
-  </Menu.Button>
+  <ChevronDownIcon className="w-5 h-5 text-purple-200" />
+</Menu.Button>
 
   <Transition
     as={Fragment}
@@ -95,11 +140,62 @@ export function GenresThemes() {
             </button>
           )}
         </Menu.Item>
+        <Menu.Item>
+  {({ active }) => (
+    <button
+      onClick={() =>
+        setOrder(type === "anime" ? "Episodes" : "Chapters")
+      }
+      className={`${
+        active ? "bg-purple-500 text-white" : "text-white/80"
+      } group flex w-full items-center rounded-lg px-3 py-2 text-2xl transition`}
+    >
+      {type === "anime" ? "Episodes 🎬" : "Chapters 📖"}
+    </button>
+  )}
+</Menu.Item>
 
       </div>
     </Menu.Items>
   </Transition>
 </Menu>
+      
+</div>
+<div className=" flex gap-3">
+<p> Status: </p>
+<p
+  onClick={() => {
+    setStatus("any");
+  }}
+  className={`cursor-pointer hand-underline ${status === "any" ? "active" : ""}`}
+>
+  Any
+</p>
+<p>/</p>
+<p
+  onClick={() => {
+    setStatus("complete");
+  }}
+  className={`cursor-pointer hand-underline ${status === "complete" ? "active" : ""}`}
+>
+  Complete
+</p>
+<p>/</p>
+<p
+  onClick={() => {
+    const value = type === "anime" ? "airing" : "publishing";
+    setStatus(value);
+  }}
+  className={`cursor-pointer hand-underline ${
+    status === (type === "anime" ? "airing" : "publishing")
+      ? "active"
+      : ""
+  }`}
+>
+  {type === "anime" ? "Airing" : "Publishing"}
+</p>
+</div>
+</div>
       </div>
       <div className="flex justify-center">
         <div className="grid grid-cols-5">
@@ -155,7 +251,7 @@ export function GenresThemes() {
       <p className="text-2xl font-[fuenteTexto]">
        {
           type === "anime"
-            ? `Episodes: ${l.episodes ?? "???"} 📺​`
+            ? `Episodes: ${l.episodes ?? "???"} 🎬​`
             : `Chapters: ${l.chapters ?? "???"}  📖​`
        }
       </p>

@@ -46,15 +46,19 @@ import {GenresThemes} from "./type"
       />
       <Route path="/:type/Genre/:id/:name" element={
         <>
-        <GenresThemes/>
+        <GenresThemes top={false} />
         </>
       }
       />
       <Route path="/:type/Theme/:id/:name" element={
         <>
-        <GenresThemes/>
+        <GenresThemes top={false} />
         </>
       }
+      />
+      <Route path="/top/:type" element={
+        <GenresThemes top={true}/>
+      } 
       />
       </Routes>
     </BrowserRouter>
