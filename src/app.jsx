@@ -3,6 +3,8 @@ import { Header, Anime, Manga } from "./home";
 import { MediaPage, MediaCharacters, MediaRelations, MediaReviews } from "./media";
 import {Input, Genres,Themes,SearchPage} from "./search"
 import {GenresThemes} from "./type"
+import {Login} from "./login"
+import {List} from "./list"
  function App() {
   return (
     <BrowserRouter>
@@ -10,14 +12,26 @@ import {GenresThemes} from "./type"
       <Routes>
         <Route path="/" element={
           <>
-            <div className="bg-[linear-gradient(180deg,_#fce6f6_57%,_#b683cc_100%)] h-[100vh]">
+            <div className="bg-[linear-gradient(180deg,_#fce6f6_57%,_#b683cc_100%)] h-[100vh] max-md:h-auto">
             <Anime />
             <Manga />
             </div>
           </>
         } />
+      <Route path= "login" element={
+        <div className="bg-[linear-gradient(180deg,_#fce6f6_57%,_#b683cc_100%)] h-[94.4vh]">
+        <Login />
+        </div>
+      }>
+      </Route>
 
-        <Route path="/anime/:id" element={
+      <Route path= "/mylist" element={
+        <div className="bg-[linear-gradient(180deg,_#fce6f6_57%,_#b683cc_100%)] h-[94.4vh]">
+        <List />
+        </div>
+      }>
+      </Route>
+         <Route path="/anime/:id" element={
           <>
           <div className="bg-[linear-gradient(180deg,_#fce6f6_57%,_#b683cc_100%)]">
           <MediaPage type="anime" />
@@ -58,7 +72,7 @@ import {GenresThemes} from "./type"
       />
       <Route path="/top/:type" element={
         <GenresThemes top={true}/>
-      } 
+      }
       />
       </Routes>
     </BrowserRouter>

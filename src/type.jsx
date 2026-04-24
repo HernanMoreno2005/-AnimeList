@@ -1,5 +1,6 @@
 import { useState, useEffect, Fragment } from "react"
 import { Menu, Transition } from "@headlessui/react";
+import { supabase } from '../supabaseClient'
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { generatePath, Link, useParams,useSearchParams} from "react-router-dom"
 import flechaIzquierda from "./assets/flechaIzquierda.png";
@@ -14,9 +15,25 @@ export function GenresThemes({top}) {
   const [searchParams] = useSearchParams();
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
   const [order,setOrder] = useState("Members");
+  const [user, setUser] = useState(null)
   let id,name,type;
-  
   let url;
+   useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user)
+    })
+
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null)
+      }
+    )
+
+    return () => {
+      listener.subscription.unsubscribe()
+    }
+  }, [])
   if(!top){
     ({ id, name, type } = useParams());
     if(status != "any"){
@@ -273,7 +290,7 @@ const label =
         More Info
       </Link>
 
-      <button className="font-[fuente] cursor-pointer bg-white text-purple-600 w-30 rounded-2xl mt-2 p-2.5 border-black border-2
+      <button onClick={() => MyList(type,l.mal_id,l.title,user)} className="font-[fuente] cursor-pointer bg-white text-purple-600 w-30 rounded-2xl mt-2 p-2.5 border-black border-2
       hover:bg-purple-200 transition">
         Add MyList
       </button>
@@ -369,4 +386,63 @@ function getRankColor(rank) {
   if (rank === 3) return "bg-amber-600 text-white";  
 
   return "bg-purple-600 text-white"; 
+}
+async function MyList(type, id, name, user) {
+  if (!user) {
+    alert("login for add the anime in your list")
+    return
+  }
+
+  if (type === "anime") {
+
+    const { error: errorAnime } = await supabase
+      .from("anime")
+      .upsert(
+        [{ id, name }],
+        { onConflict: 'id', ignoreDuplicates: true }
+      )
+
+    if (errorAnime) {
+      console.log("Error anime:", errorAnime)
+      return
+    }
+
+    const { error: errorList } = await supabase
+      .from("listAnime")
+      .upsert(
+        [{ id_user: user.id, id_anime: id }],
+        { onConflict: 'id_user,id_anime', ignoreDuplicates: true }
+      )
+
+    if (errorList) {
+      console.log("Error listAnime:", errorList)
+    }
+
+  } else {
+
+
+    const { error: errorManga } = await supabase
+      .from("manga")
+      .upsert(
+        [{ id, name }],
+        { onConflict: 'id', ignoreDuplicates: true }
+      )
+
+    if (errorManga) {
+      console.log("Error manga:", errorManga)
+      return
+    }
+
+
+    const { error: errorList } = await supabase
+      .from("listManga")
+      .upsert(
+        [{ id_user: user.id, id_manga: id }],
+        { onConflict: 'id_user,id_manga', ignoreDuplicates: true }
+      )
+
+    if (errorList) {
+      console.log("Error listAnime:", errorList)
+    }
+  }
 }

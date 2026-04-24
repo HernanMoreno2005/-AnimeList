@@ -98,12 +98,12 @@ export function MediaCharacters({ type }) {
   return (
     <div className="flex justify-center flex-col items-center">
       <h2 className="font-bold font-[fuente] text-center text-3xl text-purple-600 my-5"> Characters</h2>
-      <div className="grid grid-cols-3 gap-4 items-center">
-        {data.slice(0, 9).map(c => (
-          <div key={c.character.mal_id} className="flex flex-col items-center">
-            <p className="font-[fuente] text-purple-600 font-bold">{c.character.name}</p>
-            <img className= "w-48 h-80 mw-[60%]" src={c.character.images.jpg.image_url} />
-             <p className="mb-2 font-[fuenteTexto]">{c.role}</p>
+      <div className="flex overflow-x-auto h-[70vh] w-full snap-x snap-mandatory justify-center">
+        {data.slice(0, 10).map(c => (
+          <div key={c.character.mal_id} className="relative h-full w-40 shrink-0 snap-start transition-all duration-500 ease-[ease] hover:flex-[0_0_40vh]">
+            <img className= "w-full h-full object-cover" src={c.character.images.jpg.image_url} />
+            <p className="font-[fuente] text-white font-bold absolute bottom-10 left-10 text-2xl w-full ">{c.character.name}</p>
+             <p className="mb-2 font-[fuenteTexto] absolute bottom-1 left-10 text-white text-2xl w-full">{c.role}</p>
           </div>
         ))}
       </div>

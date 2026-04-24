@@ -28,93 +28,18 @@ body::-webkit-scrollbar-thumb {
   border-radius: 9999px;
 }
 
-#encabezado{
-    display: flex;
-    justify-content: space-between;
-    
-}
-.moreInfoContainer{
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-.moreInfoContainer button{
-    width: 5rem;
-    height: 2rem;
-    background-color: #6F089F;
-    color:white;
-    border-radius: 10px;
-    cursor:pointer;
-    transition: 1s ease;
-}
-.moreInfoContainer button:hover{
-    background-color: white;
-    color:#6F089F;
-}
-#login{
-    padding: 1vh;
-    background-color: #6F089F;
-    color: white;
-    width: 10vh;
-    height: 3vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    font-family: "julee";
-    font-size: 2vh;
-}
-#secciones{
-    gap: 1vh;
-    display: flex;
-    color: #6F089F;
-    font-family: fuente;
-    cursor: pointer;
+@keyframes rgbBorder {
+  0%   { border-color: rgb(88, 28, 135); box-shadow: 0 0 8px rgb(88, 28, 135); }
+  25%  { border-color: rgb(139, 92, 246); box-shadow: 0 0 10px rgb(139, 92, 246); }
+  50%  { border-color: rgb(196, 181, 253); box-shadow: 0 0 12px rgb(196, 181, 253); }
+  75%  { border-color: rgb(221, 214, 254); box-shadow: 0 0 14px rgb(221, 214, 254); }
+  100% { border-color: rgb(255, 255, 255); box-shadow: 0 0 16px rgb(255, 255, 255); }
 }
 
-.animeTitle{
-    color: #6F089F;
-    font-family: fuente;
+.rgb-hover {
+  border: 4px solid transparent;
 }
-#BestAnimeTitle{
-    color: #6F089F;
-    font-family:"Jim Nightshade";
-    text-align: center;
-    font-size: 6vh;
-}
-.animeInformation{
-    display: flex;
-    align-items: center;
-}
-.containerScore{
-    margin-left: 2vh;
-}
-.animeDescription{
-    font-family: fuente;
-    margin-right: 1vh;
-    margin-bottom: 0;
 
-}
-.score{
-    color: #6F089F;
-    font-family: fuente;
-    font-size: 3vh;
-}
-.container{
-    width: 80%;
-}
-.fullContainer{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1vh;
-}
-.container img{
-    border-radius: 10px;
-}
-.arrowContainer{
-    display: flex;
-}
-.arrow{
-    cursor: pointer;
+.rgb-hover:hover {
+   animation: rgbBorder 1.5s ease-in-out infinite alternate;
 }

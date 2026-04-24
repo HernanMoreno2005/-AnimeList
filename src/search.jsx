@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
 import { Link, useParams } from "react-router-dom"
-
+import Fuse from "fuse.js"
 export function Input() {
   const [query, setQuery] = useState("")
   const [results, setResults] = useState([])
-  const {type} = useParams();
+  const { type } = useParams()
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (query.length < 3) {
@@ -15,12 +16,22 @@ export function Input() {
       const fetchData = async () => {
         try {
           const res = await fetch(
-            `https://api.jikan.moe/v4/${type}?q=${query}&limit=20`
+            `https://api.jikan.moe/v4/${type}?q=${query}&order_by=favorites&sort=desc&limit=25`
           )
 
           const data = await res.json()
 
-          setResults(data.data || [])
+const fuse = new Fuse(data.data || [], {
+  keys: ["title"],
+  threshold: 0.3,
+  includeScore: true,
+  ignoreLocation: true,
+})
+
+const results = fuse.search(query)
+
+setResults(results.map(r => r.item))
+
         } catch (error) {
           console.error(error)
           setResults([])
@@ -28,15 +39,15 @@ export function Input() {
       }
 
       fetchData()
-    }, 400) 
+    }, 400)
 
     return () => clearTimeout(timeout)
-  }, [query])
+  }, [query, type])
 
   return (
     <div className="flex justify-center flex-col items-center relative">
       
-      <h1 className="font-[fuente] text-purple-600 font-bold text-3xl f capitalize ">
+      <h1 className="font-[fuente] text-purple-600 font-bold text-3xl capitalize">
         {type} Search
       </h1>
 
@@ -97,7 +108,7 @@ export function Genres({type}) {
         Genres
       </h2>
 
-      <div className="grid grid-cols-5 gap-1 justify-items-center">
+      <div className="grid grid-cols-5 gap-1 justify-items-center max-md:flex max-md:flex-col">
         {genres.map(genre => (
           <Link
             key={genre.mal_id}
@@ -130,7 +141,7 @@ export function Themes({type}) {
         Themes
       </h2>
 
-      <div className="grid grid-cols-5 gap-1 justify-items-center">
+      <div className="grid grid-cols-5 gap-1 justify-items-center max-md:flex max-md:flex-col">
         {themes.map(theme => (
           <Link
             key={theme.mal_id}
