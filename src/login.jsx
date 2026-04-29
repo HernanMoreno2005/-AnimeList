@@ -40,9 +40,9 @@ useEffect(() => {
        <input  value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="border-purple-600 border-4 p-3 bg-white rounded-2xl w-2xs " placeholder="Email" /> 
        <input value={password} type="password" onChange={(e) => setPassword(e.target.value)} type="password" className=" border-purple-600 border-4 rounded-2xl  p-3 bg-white w-2xs" placeholder="Password" />
        </div>
-    <div className="flex gap-5">
+    <div className="flex gap-5 flex-row-reverse">
     <p onClick={() => loginUser(email,password)} className="w-20 h-8 bg-purple-700 text-white rounded-lg hover:bg-white hover:text-purple-700 transition-all duration-1000 border-2 border-black cursor-pointer text-center" > Login </p> 
-    <p onClick={() => setSingout(true)} className="w-20 h-8 bg-purple-700 text-white rounded-lg hover:bg-white hover:text-purple-700 transition-all duration-1000 border-2 border-black cursor-pointer text-center"> Sing out</p>
+    <p onClick={() => setSingout(true)} className="w-20 h-8 bg-purple-700 text-white rounded-lg hover:bg-white hover:text-purple-700 transition-all duration-1000 border-2 border-black cursor-pointer text-center"> Sign in</p>
     </div>
     </div>
     </div>
@@ -51,7 +51,7 @@ useEffect(() => {
     else{
         return(
        <div className="flex flex-col justify-center items-center h-96 mt-5">
-       <h1 className="text-center text-purple-600 font-[fuente] text-4xl"> Sing out </h1>
+       <h1 className="text-center text-purple-600 font-[fuente] text-4xl"> Sign in </h1>
        <div className="flex justify-center flex-col items-center">
        <div className="flex flex-col items-baseline  gap-4 mb-10 m-4">
        <input value={username} onChange={(e) => setUserName(e.target.value)} className="border-purple-600 border-4 p-3 bg-white rounded-2xl w-2xs " placeholder="UserName" /> 
@@ -59,8 +59,8 @@ useEffect(() => {
        <input value={password} type="password" onChange={(e) => setPassword(e.target.value)} className=" border-purple-600 border-4 rounded-2xl  p-3 bg-white w-2xs" placeholder="Password" />
        <input value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)}type="password" className=" border-purple-600 border-4 rounded-2xl  p-3 bg-white w-2xs" placeholder="Repeat Password" />
        </div>
-    <div className="flex gap-5">
-    <p className="w-20 h-8 bg-purple-700 text-white rounded-lg hover:bg-white hover:text-purple-700 transition-all duration-1000 border-2 border-black cursor-pointer text-center" onClick={handleRegister}> Sing out </p> 
+    <div className="flex flex-row-reverse gap-5">
+    <p className="w-20 h-8 bg-purple-700 text-white rounded-lg hover:bg-white hover:text-purple-700 transition-all duration-1000 border-2 border-black cursor-pointer text-center" onClick={handleRegister}> Sign in </p> 
     <p onClick={() => setSingout(false)} className="w-20 h-8 bg-purple-700 text-white rounded-lg hover:bg-white hover:text-purple-700 transition-all duration-1000 border-2 border-black cursor-pointer text-center"> Login</p>
     {showModal && (
   <div className="fixed inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm">
@@ -86,6 +86,9 @@ useEffect(() => {
 async function register(userName, email, password, repeatPassword) {
   if (password !== repeatPassword) {
     return { ok: false, message: "Passwords do not match" };
+  }
+  if(password.length < 6){
+    return{ok:false, message: "The password length must be a minimum of 6"}
   }
 
   const { error } = await supabase.auth.signUp({

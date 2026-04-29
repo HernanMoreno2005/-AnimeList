@@ -43,3 +43,20 @@ body::-webkit-scrollbar-thumb {
 .rgb-hover:hover {
    animation: rgbBorder 1.5s ease-in-out infinite alternate;
 }
+
+.ocultar-en-mobile {
+  display: flex;
+}
+.viewPhone{
+  display:none
+}
+
+@media (max-width: 768px) {
+  .ocultar-en-mobile {
+    display: none;
+  }
+  .viewPhone{
+    display: flex;
+  }
+}
+

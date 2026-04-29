@@ -55,11 +55,11 @@ setResults(results.map(r => r.item))
         placeholder={`search ${type}...`}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-3xl bg-gray-200 border-solid border-white border-4 rounded-[10px] p-5 mt-5"
+        className="w-3xl bg-gray-200 border-solid border-white border-4 rounded-[10px] p-5 mt-5 max-md:w-90"
       />
 
       {results.length > 0 && (
-        <div className="absolute top-[120px] w-3xl bg-white rounded-xl shadow-lg max-h-[400px] overflow-y-auto">
+        <div className="absolute top-[120px] w-3xl bg-white rounded-xl shadow-lg max-h-[400px] overflow-y-auto max-md:w-90">
           
           {results.map((anime) => (
             <Link
@@ -108,7 +108,7 @@ export function Genres({type}) {
         Genres
       </h2>
 
-      <div className="grid grid-cols-5 gap-1 justify-items-center max-md:flex max-md:flex-col">
+      <div className="grid grid-cols-5 gap-1 justify-items-center max-md:flex max-md:flex-col max-md:items-center">
         {genres.map(genre => (
           <Link
             key={genre.mal_id}
@@ -141,7 +141,7 @@ export function Themes({type}) {
         Themes
       </h2>
 
-      <div className="grid grid-cols-5 gap-1 justify-items-center max-md:flex max-md:flex-col">
+      <div className="grid grid-cols-5 gap-1 justify-items-center max-md:flex max-md:flex-col max-md:items-center">
         {themes.map(theme => (
           <Link
             key={theme.mal_id}

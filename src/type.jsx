@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from "react"
+import { useState, useEffect, Fragment,useCallback } from "react"
 import { Menu, Transition } from "@headlessui/react";
 import { supabase } from '../supabaseClient'
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
@@ -16,8 +16,21 @@ export function GenresThemes({top}) {
   const page = Math.max(1, Number(searchParams.get("page")) || 1);
   const [order,setOrder] = useState("Members");
   const [user, setUser] = useState(null)
+  const [myList, setMyList] = useState([]);
+  const [idUse, setId] = useState("id_anime");
+  const [myLists, setMyLists] = useState("listAnime");
+  const [added,setAdded] = useState("Add to list")
   let id,name,type;
   let url;
+  const handleAddToList = async (type, mal_id, title, user) => {
+  await MyList(type, mal_id, title, user);
+
+  const idField = type === "anime" ? "id_anime" : "id_manga";
+
+  const exists = myList.some(item => item[idField] === mal_id);
+  if (exists) return;
+  setMyList(prev => [...prev, { [idField]: mal_id }]);
+};
    useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user)
@@ -34,6 +47,34 @@ export function GenresThemes({top}) {
       listener.subscription.unsubscribe()
     }
   }, [])
+  useEffect(() => {
+  if (type === "manga") {
+    setMyLists("listManga");
+    setId("id_manga");
+  } else {
+    setMyLists("listAnime");
+    setId("id_anime");
+  }
+}, [type]);
+  useEffect(() => {
+  const fetchList = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from(myLists)
+      .select(idUse)
+      .eq("id_user", user.id);
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    setMyList(data || []);
+  };
+
+  fetchList();
+}, [user, myLists, idUse]);
   if(!top){
     ({ id, name, type } = useParams());
     if(status != "any"){
@@ -73,7 +114,7 @@ const label =
     : "Score";
     useEffect(() => {
   setStatus("any");
-  setOrder("members"); 
+  setOrder("Members"); 
 }, [type]);
   useEffect(() => {
     setList([]);
@@ -96,11 +137,11 @@ const label =
   return (
     <div>
       <div id="titleContainer" className="w-full  flex justify-end text-2xl text-purple-600  font-[fuente] items-center">
-      <h1 className=" absolute left-1/2 -translate-x-1/2 text-center font-[fuente] text-4xl text-purple-600 mt-auto">
+      <h1 className=" absolute left-1/2 -translate-x-1/2 text-center font-[fuente] text-4xl text-purple-600 mt-auto max-md:top-3 max-md:left-46">
         {name}
       </h1>
       <div className="flex flex-col items-center">
-      <div className="flex gap-2 my-3">
+      <div className="flex gap-2 my-3 max-md:mb-15 max-md:mt-10 ">
       <p>Order by</p>
   <Menu as="div" className=" inline-block text-left">
   <Menu.Button className="inline-flex items-center gap-2 rounded-xl 
@@ -215,90 +256,18 @@ const label =
 </div>
       </div>
       <div className="flex justify-center">
-        <div className="grid grid-cols-5">
+        <div className="grid grid-cols-5 max-md:flex max-md:flex-col max-md:items-center ">
           {list.map(l => (
-            
-            <Tilt
-              key={l.mal_id}
-              tiltMaxAngleX={3}
-              tiltMaxAngleY={3}
-              transitionSpeed={1200}
-              className="m-4"
-            >
-             <div className="relative group h-full rounded-2xl p-[1px] bg-white">
-
-
-  <div className="absolute inset-0 rounded-2xl group-hover:opacity-100 transition duration-500"></div>
-
-
-  <div className="relative flex flex-col items-center h-full rounded-2xl p-2 border border-white/10
-  shadow-[0_0_10px_rgba(255,255,255,0.05),0_0_30px_rgba(139,92,246,0.4)]">
- <div
-  className={`absolute top-2 right-2 z-10 
-  ${getRankColor(l.rank)}
-  text-sm font-bold 
-  px-3 py-1 rounded-full
-  shadow-[0_0_10px_rgba(0,0,0,0.3)]
-  transition-all duration-300
-  group-hover:opacity-0`}
->
-  #{l.rank ?? "?"} 🌍
-</div>
-    <h2 className="font-[fuente] text-2xl text-center max-w-full overflow-x-auto whitespace-nowrap scrollbar-thin overflow-y-hidden p-2">
-      {l.title}
-    </h2>
-
-    <div className="flex gap-2 flex-wrap mt-3">
-      {l.genres?.map(g => (
-        <span className="font-[fuenteTexto] " key={g.mal_id}>
-          {g.name}
-        </span>
-      ))}
-    </div>
-
-    <img
-      src={l.images.jpg.image_url}
-      className="h-48 mt-auto mb-3 rounded-lg"
-    />
-
-    <div className="flex flex-col items-center">
-      <p className="text-2xl font-[fuenteTexto]">
-        Score: {l.score ?? "N/A"} ⭐
-      </p>
-      <p className="text-2xl font-[fuenteTexto]">
-       {
-          type === "anime"
-            ? `Episodes: ${l.episodes ?? "???"} 🎬​`
-            : `Chapters: ${l.chapters ?? "???"}  📖​`
-       }
-      </p>
-      <p className="text-2xl font-[fuenteTexto]">
-        Members: {l.members.toLocaleString()} 👥
-      </p>
-    </div>
-
-    <p className="text-center font-[fuenteTexto] max-h-30 overflow-y-auto ">
-      {l.synopsis}
-    </p>
-
-    <div className="mt-auto mb-3 flex items-center gap-2">
-      <Link
-        to={`/${type}/${l.mal_id}`}
-        className="font-[fuente] bg-white text-purple-600 w-30 rounded-2xl mt-2 p-2.5 border-black border-2
-        hover:bg-purple-200 transition text-center"
-      >
-        More Info
-      </Link>
-
-      <button onClick={() => MyList(type,l.mal_id,l.title,user)} className="font-[fuente] cursor-pointer bg-white text-purple-600 w-30 rounded-2xl mt-2 p-2.5 border-black border-2
-      hover:bg-purple-200 transition">
-        Add MyList
-      </button>
-    </div>
-  </div>
-</div>
-            </Tilt>
-
+         <AnimeCard
+  key={l.mal_id}
+  l={l}
+  type={type}
+  myList={myList}
+  idUse={idUse}
+  user={user}
+  handleAddToList={handleAddToList}
+  getRankColor={getRankColor}
+/>
           ))}
         </div>
       </div>
@@ -314,6 +283,7 @@ export function Pagination({ lastPage, page }) {
   const [hoverRight, setHoverRight] = useState(false);
   const section = Math.trunc((page - 1) / 5);
   const startPage = section * 5 + 1;
+  const isMobile = useIsMobile();
   const pages = [];
 
   for (let i = 0; i < 5; i++) {
@@ -328,13 +298,13 @@ export function Pagination({ lastPage, page }) {
       <button
         key={currentPage}
         onClick={() => setSearchParams({ page: currentPage })}
-        className={`px-3 py-2 rounded-2xl border-2 font-[fuente] cursor-pointer ${
+        className={`px-3 py-2 rounded-2xl border-2 font-[fuente] cursor-pointer max-md:w-13 max-md:px-1 max-md:py-1 whitespace-nowrap ${
           currentPage === page
             ? "bg-purple-600 text-white border-black"
             : "bg-white text-purple-600 border-gray-400 hover:bg-purple-100"
         }`}
       >
-        {start} - {finish}
+        {isMobile ? currentPage : `${start} - ${finish}`}
       </button>
     );
   }
@@ -387,7 +357,74 @@ function getRankColor(rank) {
 
   return "bg-purple-600 text-white"; 
 }
-async function MyList(type, id, name, user) {
+import React from "react";
+
+
+const AnimeCard = React.memo(function AnimeCard({
+  l,
+  type,
+  myList,
+  idUse,
+  user,
+  handleAddToList,
+  getRankColor
+}) {
+  const isAdded = myList.some(item => item[idUse] === l.mal_id);
+
+  return (
+   <Tilt
+  tiltMaxAngleX={3}
+  tiltMaxAngleY={3}
+  transitionSpeed={1200}
+  className="m-4 max-md:w-80"
+>
+  <div className="flex flex-col items-center rounded-2xl p-2 border border-white/10
+  shadow-[0_0_10px_rgba(255,255,255,0.05),0_0_30px_rgba(139,92,246,0.4)] h-130 ">
+
+   
+    <div className="w-full mb-3">
+      <MediaCard
+        anime={l}
+        type={type}
+        onDelete={null} 
+      />
+    </div>
+
+
+
+    <p className="text-center font-[fuenteTexto] mt-3 text-sm px-2">
+      {getFirstSentence(l.synopsis)}
+    </p>
+
+
+    <div className="mt-auto mb-2 flex items-center gap-2">
+      <Link
+        to={`/${type}/${l.mal_id}`}
+        className="font-[fuente] bg-white text-purple-600 w-28 md:w-30 rounded-2xl p-2 border-black border-2
+        hover:bg-purple-200 transition text-center text-sm"
+      >
+        More Info
+      </Link>
+
+      <button 
+        onClick={() => handleAddToList(type, l.mal_id, l.title, user)}
+        className="font-[fuente] cursor-pointer bg-white text-purple-600 w-28 md:w-30 rounded-2xl p-2 border-black border-2 hover:bg-purple-200 transition text-sm"
+      >
+        {
+          myList.some(item => item[idUse] === l.mal_id)
+            ? "On your list"
+            : "Add to list"
+        }
+      </button>
+    </div>
+
+  </div>
+</Tilt>
+  );
+});
+
+export default AnimeCard;
+export async function MyList(type, id, name, user) {
   if (!user) {
     alert("login for add the anime in your list")
     return
@@ -445,4 +482,137 @@ async function MyList(type, id, name, user) {
       console.log("Error listAnime:", errorList)
     }
   }
+}
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return isMobile;
+}
+function getFirstSentence(text) {
+  if (!text) return "";
+
+  const index = text.indexOf(".");
+  
+  if (index === -1) return text; 
+  
+  return text.slice(0, index + 1);
+}
+
+
+export function MediaCard({ anime, type, onDelete }) {
+  const [isMobile, setIsMobile] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const isActive = isMobile ? expanded : false;
+
+  return (
+    <div
+      className="relative overflow-hidden rounded-2xl h-[260px] sm:h-[300px] md:h-[350px] group cursor-pointer"
+      onClick={() => {
+        if (isMobile) setExpanded(!expanded);
+      }}
+    >
+
+
+      <img
+        src={anime.images.jpg.large_image_url}
+        className={`absolute inset-0 w-full h-full transition duration-500
+        ${isActive ? "opacity-0" : "blur-xl scale-110"}`}
+        alt=""
+      />
+
+
+      <img
+        src={anime.images.jpg.large_image_url}
+        alt={anime.title}
+        className={`absolute inset-0 w-full h-full transition duration-500 border-4 border-white rounded-2xl
+        ${
+          isMobile
+            ? isActive
+              ? "object-cover scale-100"
+              : "object-contain"
+            : "object-contain md:group-hover:opacity-0"
+        }`}
+      />
+
+
+      <img
+        src={anime.images.jpg.large_image_url}
+        alt={anime.title}
+        className={`absolute inset-0 w-full h-full transition duration-500
+        ${
+          isMobile
+            ? isActive
+              ? "opacity-100 object-cover scale-100"
+              : "opacity-0"
+            : "opacity-0 object-cover scale-110 md:group-hover:opacity-100 md:group-hover:scale-100"
+        }`}
+      />
+
+
+      <div
+        className={`absolute inset-0 bg-black/70 flex flex-col justify-end p-3 rounded-2xl transition
+        ${
+          isMobile
+            ? isActive
+              ? "opacity-100"
+              : "opacity-100" 
+            : "opacity-0 md:group-hover:opacity-100"
+        }`}
+      >
+        <h2 className="text-white text-sm md:text-lg font-bold line-clamp-2">
+          {anime.title}
+        </h2>
+
+        <p className="text-gray-300 text-xs md:text-sm">
+          ⭐ {anime.score || "N/A"}
+        </p>
+
+        <p className="text-gray-300 text-xs md:text-sm">
+          👥 {anime.members?.toLocaleString() || "N/A"}
+        </p>
+
+        {type === "anime" ? (
+          <p className="text-gray-300 text-xs md:text-sm">
+            Episodes: {anime.episodes}
+          </p>
+        ) : (
+          <p className="text-gray-300 text-xs md:text-sm">
+            Chapters: {anime.chapters}
+          </p>
+        )}
+      </div>
+
+      <div
+        className={`absolute top-2 right-2 z-20 
+        ${getRankColor(anime.rank)}
+        text-xs md:text-sm font-bold px-2 py-1 rounded-full
+        transition
+        ${
+          isMobile
+            ? "opacity-100"
+            : "opacity-100 md:group-hover:opacity-0"
+        }`}
+      >
+        #{anime.rank ?? "?"}
+      </div>
+    </div>
+  );
 }
