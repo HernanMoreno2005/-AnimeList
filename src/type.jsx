@@ -20,6 +20,8 @@ export function GenresThemes({top}) {
   const [idUse, setId] = useState("id_anime");
   const [myLists, setMyLists] = useState("listAnime");
   const [added,setAdded] = useState("Add to list")
+  const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
   let id,name,type;
   let url;
   const handleAddToList = async (type, mal_id, title, user) => {
@@ -31,6 +33,8 @@ export function GenresThemes({top}) {
   if (exists) return;
   setMyList(prev => [...prev, { [idField]: mal_id }]);
 };
+
+
    useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user)
@@ -116,23 +120,35 @@ const label =
   setStatus("any");
   setOrder("Members"); 
 }, [type]);
-  useEffect(() => {
-    setList([]);
-    const timeout = setTimeout(() => {
-      fetch(url)
-        .then(res => res.json())
-        .then(res => {
-  const unique = Array.from(
-    new Map(res.data.map(item => [item.mal_id, item])).values()
-  );
+ useEffect(() => {
+  setList([]);
+  setVisible(false);
+  setLoading(true); 
 
-  setList(unique);
-  setLastPage(res.pagination.last_visible_page);
-});
-    }, 500);
+  setTimeout(() => {
+    setVisible(true);
+  }, 50);
 
-    return () => clearTimeout(timeout);
-  }, [id, page,order,status,type,url]);
+  const timeout = setTimeout(() => {
+    fetch(url)
+      .then(res => res.json())
+      .then(res => {
+        const unique = Array.from(
+          new Map(res.data.map(item => [item.mal_id, item])).values()
+        );
+
+        setList(unique);
+        setLastPage(res.pagination.last_visible_page);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false); 
+      });
+  }, 500);
+
+  return () => clearTimeout(timeout);
+}, [id, page, order, status, type, url]);
 
   return (
     <div>
@@ -256,20 +272,44 @@ const label =
 </div>
       </div>
       <div className="flex justify-center">
-        <div className="grid grid-cols-5 max-md:flex max-md:flex-col max-md:items-center ">
-          {list.map(l => (
-         <AnimeCard
-  key={l.mal_id}
-  l={l}
-  type={type}
-  myList={myList}
-  idUse={idUse}
-  user={user}
-  handleAddToList={handleAddToList}
-  getRankColor={getRankColor}
-/>
-          ))}
+       <div key={type}  className="grid grid-cols-5 max-md:flex max-md:flex-col max-md:items-center">
+
+  {loading
+    ? Array.from({ length: 10 }).map((_, i) => (
+        <div key={i} className="m-4 max-md:w-80 animate-pulse">
+          <div className="flex flex-col items-center rounded-2xl p-2 border border-white/10 h-130">
+
+
+            <div className="w-full h-[260px] md:h-[350px] bg-gray-700 rounded-2xl mb-3"></div>
+
+  
+            <div className="w-full h-4 bg-gray-700 rounded mb-2"></div>
+            <div className="w-3/4 h-4 bg-gray-700 rounded mb-4"></div>
+
+  
+            <div className="mt-auto flex gap-2">
+              <div className="w-28 h-10 bg-gray-700 rounded-2xl"></div>
+              <div className="w-28 h-10 bg-gray-700 rounded-2xl"></div>
+            </div>
+
+          </div>
         </div>
+      ))
+    : list.map((l) => (
+        <AnimeCard
+          key={l.mal_id}
+          l={l}
+          type={type}
+          myList={myList}
+          idUse={idUse}
+          user={user}
+          handleAddToList={handleAddToList}
+          getRankColor={getRankColor}
+        />
+      ))
+  }
+
+</div>
       </div>
 
       <Pagination lastPage={lastPage} page={page} />
@@ -376,7 +416,7 @@ const AnimeCard = React.memo(function AnimeCard({
   tiltMaxAngleX={3}
   tiltMaxAngleY={3}
   transitionSpeed={1200}
-  className="m-4 max-md:w-80"
+  className="m-4 max-md:w-80 transition-all duration-500 ease-in-out"
 >
   <div className="flex flex-col items-center rounded-2xl p-2 border border-white/10
   shadow-[0_0_10px_rgba(255,255,255,0.05),0_0_30px_rgba(139,92,246,0.4)] h-130 ">

@@ -83,24 +83,29 @@ setResults(results.map(r => r.item))
     </div>
   )
 }
-export function Genres({type}) {
-  const [genres, setGenres] = useState([])
-  const typeGenre = "Genre";
+export function Genres({ type }) {
+  const [genres, setGenres] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
+    setLoading(true);
+
     fetch(`https://api.jikan.moe/v4/genres/${type}`)
       .then(res => res.json())
       .then(data => {
-        if (!data.data) return
+        if (!data.data) return;
 
-        const banned = ["Ecchi", "Erotica", "Hentai"]
+        const banned = ["Ecchi", "Erotica", "Hentai"];
 
         const filtered = data.data.filter(
           g => !banned.includes(g.name)
-        )
+        );
 
-        setGenres(filtered)
+        setGenres(filtered);
+        setLoading(false);
       })
-  }, [])
+      .catch(() => setLoading(false));
+  }, [type]); 
 
   return (
     <div>
@@ -109,31 +114,45 @@ export function Genres({type}) {
       </h2>
 
       <div className="grid grid-cols-5 gap-1 justify-items-center max-md:flex max-md:flex-col max-md:items-center">
-        {genres.map(genre => (
-          <Link
-            key={genre.mal_id}
-            to={`/${type}/Genre/${genre.mal_id}/${genre.name}?page=1`}
-            className="font-[fuenteTexto] font-bold bg-gradient-to-r from-fuchsia-600 to-purple-600 p-3 w-90 text-center text-white rounded-2xl text-2xl border-4 border-black hover:border-white"
-          >
-            {genre.name}
-          </Link>
-        ))}
+        
+        {loading
+          ? Array.from({ length: 10 }).map((_, i) => (
+              <div
+                key={i}
+                className="w-90 h-16 bg-gray-700 rounded-2xl animate-pulse"
+              ></div>
+            ))
+          : genres.map(genre => (
+              <Link
+                key={genre.mal_id}
+                to={`/${type}/Genre/${genre.mal_id}/${genre.name}?page=1`}
+                className="font-[fuenteTexto] font-bold bg-gradient-to-r from-fuchsia-600 to-purple-600 p-3 w-90 text-center text-white rounded-2xl text-2xl border-4 border-black hover:border-white"
+              >
+                {genre.name}
+              </Link>
+            ))}
       </div>
     </div>
-  )
+  );
 }
 
-export function Themes({type}) {
-  const [themes, setThemes] = useState([])
+export function Themes({ type }) {
+  const [themes, setThemes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
+
     fetch(`https://api.jikan.moe/v4/genres/${type}?filter=themes`)
       .then(res => res.json())
       .then(data => {
-        if (!data.data) return
-        setThemes(data.data)
+        if (!data.data) return;
+
+        setThemes(data.data);
+        setLoading(false);
       })
-  }, [])
+      .catch(() => setLoading(false));
+  }, [type]); 
 
   return (
     <div>
@@ -142,18 +161,26 @@ export function Themes({type}) {
       </h2>
 
       <div className="grid grid-cols-5 gap-1 justify-items-center max-md:flex max-md:flex-col max-md:items-center">
-        {themes.map(theme => (
-          <Link
-            key={theme.mal_id}
-            to={`/${type}/Theme/${theme.mal_id}/${theme.name}?page=1`}
-            className="font-[fuenteTexto] font-bold bg-gradient-to-r from-fuchsia-600 to-purple-600 p-3 w-90 text-center text-white rounded-2xl text-2xl border-4 border-black hover:border-white"
-          >
-            {theme.name}
-          </Link>
-        ))}
+        
+        {loading
+          ? Array.from({ length: 10 }).map((_, i) => (
+              <div
+                key={i}
+                className="w-90 h-16 bg-gray-700 rounded-2xl animate-pulse"
+              ></div>
+            ))
+          : themes.map(theme => (
+              <Link
+                key={theme.mal_id}
+                to={`/${type}/Theme/${theme.mal_id}/${theme.name}?page=1`}
+                className="font-[fuenteTexto] font-bold bg-gradient-to-r from-fuchsia-600 to-purple-600 p-3 w-90 text-center text-white rounded-2xl text-2xl border-4 border-black hover:border-white"
+              >
+                {theme.name}
+              </Link>
+            ))}
       </div>
     </div>
-  )
+  );
 }
 export function SearchPage() {
   const { type } = useParams();

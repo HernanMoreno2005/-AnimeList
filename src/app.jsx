@@ -33,7 +33,7 @@ import {List} from "./list"
       </Route>
          <Route path="/anime/:id" element={
           <>
-          <div className="bg-[linear-gradient(180deg,_#fce6f6_57%,_#b683cc_100%)]">
+          <div className="bg-[linear-gradient(180deg,_#fce6f6_57%,_#b683cc_100%)] overflow-x-hidden">
           <MediaPage type="anime" />
           <MediaCharacters type="anime" />
           <MediaRelations type="anime" />
@@ -43,7 +43,7 @@ import {List} from "./list"
         } />
         <Route path="/manga/:id" element={
           <>
-          <div className="bg-[linear-gradient(180deg,_#fce6f6_57%,_#b683cc_100%)]">
+          <div className="bg-[linear-gradient(180deg,_#fce6f6_57%,_#b683cc_100%)] overflow-x-hidden">
           <MediaPage type="manga" />
           <MediaCharacters type="manga" />
           <MediaRelations type="manga" />

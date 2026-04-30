@@ -91,7 +91,7 @@ export function MediaPage({ type }) {
 
   return (
     <div className="flex justify-center">
-      <div className="w-[60%]">
+      <div className="w-[60%] max-md:w-[100%]">
 
 
         {loading ? (
@@ -103,7 +103,7 @@ export function MediaPage({ type }) {
         )}
 
 
-        <div className="flex justify-between mt-5 text-purple-600 font-[fuente]">
+        <div className="flex justify-between mt-5 text-purple-600 font-[fuente] max-md:flex-col max-md:w-100">
 
           <div>
             {loading ? (
@@ -146,16 +146,16 @@ export function MediaPage({ type }) {
         </div>
 
 
-        <div className="flex gap-4 mt-4">
+        <div className="flex gap-4 mt-4 max-md:flex-col">
           {loading ? (
             <SkeletonBox className="w-48 h-80" />
           ) : type === "anime" && data.trailer?.embed_url ? (
-            <iframe src={data.trailer.embed_url} className="w-96 h-80" />
+            <iframe src={data.trailer.embed_url} className="w-96 h-80 max-md:w-full" />
           ) : (
             <img src={data.images.jpg.image_url} className="w-48 h-80" />
           )}
 
-          <div className="w-full">
+          <div className="w-full max-md:flex max-md:flex-col max-md:items-center">
             {loading ? (
               <>
                 <SkeletonBox className="h-4 w-full mb-2" />
@@ -183,38 +183,52 @@ export function MediaCharacters({ type }) {
   const { id } = useParams();
   const { data, loading } = useFetchJikan(type, id, "/characters");
 
+  const [activeId, setActiveId] = useState(null);
+
+  const handleClick = (charId) => {
+    setActiveId(activeId === charId ? null : charId);
+  };
+
   return (
     <div className="flex justify-center flex-col items-center">
       <h2 className="font-bold font-[fuente] text-center text-3xl text-purple-600 my-5">
         Characters
       </h2>
 
-      <div className="flex overflow-x-auto h-[70vh] w-full snap-x snap-mandatory justify-center gap-4 px-4">
-
+      <div className="flex overflow-x-auto h-[60vh] md:h-[70vh] w-full snap-x snap-mandatory justify-start md:justify-center gap-4 px-4">
 
         {loading
           ? Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-full w-40 shrink-0 snap-start"
-              >
+              <div key={i} className="h-full w-32 md:w-40 shrink-0 snap-start">
                 <div className="w-full h-full bg-gray-700 animate-pulse rounded-xl"></div>
               </div>
             ))
 
-
           : (data || []).slice(0, 10).map(c => {
               const image = c.character.images?.jpg?.image_url;
+              const isActive = activeId === c.character.mal_id;
 
               return (
                 <div
                   key={c.character.mal_id}
-                  className="relative h-full w-40 shrink-0 snap-start overflow-hidden rounded-xl transition-all duration-500 ease-in-out hover:w-[40vh] group"
+                  onClick={() => handleClick(c.character.mal_id)}
+                  className={`
+                    relative h-full shrink-0 snap-start overflow-hidden rounded-xl transition-all duration-500 ease-in-out group cursor-pointer
+                    
+                    w-32 md:w-40
+                    
+                    ${isActive ? "w-[70vw]" : ""}
+                    md:hover:w-[25rem]
+                  `}
                 >
 
                   {image ? (
                     <img
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      className={`
+                        w-full h-full object-cover transition-transform duration-500
+                        ${isActive ? "scale-110" : ""}
+                        md:group-hover:scale-110
+                      `}
                       src={image}
                       alt={c.character.name}
                     />
@@ -222,17 +236,26 @@ export function MediaCharacters({ type }) {
                     <div className="w-full h-full bg-gray-700"></div>
                   )}
 
+                  <div className={`
+                    absolute  bg-gradient-to-t top-0 left-0 w-full h-full from-black/80 via-black/30 to-transparent transition
+                    ${isActive ? "opacity-100" : "opacity-80"}
+                    md:group-hover:opacity-100
+                  `}></div>
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-80 group-hover:opacity-100 transition"></div>
-
-
-                  <p className="font-[fuente] text-white font-bold absolute bottom-12 left-4 text-xl w-[90%] transition-all duration-300 group-hover:text-2xl">
+                  <p className={`
+                    font-[fuente] text-white font-bold absolute bottom-12 left-4 w-[90%]
+                    transition-all duration-300
+                    text-lg md:text-xl
+                    ${isActive ? "text-xl" : ""}
+                    md:group-hover:text-2xl
+                  `}>
                     {c.character.name}
                   </p>
 
-                  <p className="font-[fuenteTexto] absolute bottom-3 left-4 text-white text-lg w-[90%] opacity-80 group-hover:opacity-100">
+                  <p className="font-[fuenteTexto] absolute bottom-3 left-4 text-white text-sm md:text-lg w-[90%] opacity-80 md:group-hover:opacity-100">
                     {c.role}
                   </p>
+
                 </div>
               );
             })}
@@ -321,7 +344,7 @@ export function MediaRelations({ type }) {
                 {rel}
               </h2>
 
-              <div className="grid grid-cols-3 gap-5">
+              <div className="grid grid-cols-3 gap-5 text-center">
                 {filterRelation(rel)
                   .flatMap(r => r.entry)
                   .slice(0, 9)
@@ -381,11 +404,11 @@ export function MediaReviews({ type }) {
   const [reviews, setReviews] = useState([]);
   return (
     <div id="containerReviews">
-      <div id="titleReviews" className="flex items-center">
+      <div id="titleReviews" className="flex items-center max-md:justify-center">
       <h2 className="absolute left-1/2 -translate-x-1/2 text-4xl text-purple-600 font-[fuente] my-5">
       Reviews
       </h2>
-      <div id="categories" className="flex ml-auto">
+      <div id="categories" className="flex ml-auto max-md:mt-20 max-md:ml-0">
   <p
     className={`hand-underline text-2xl font-[fuente] text-purple-600 mr-3 ${
       noteReviews ? "active" : ""
@@ -473,7 +496,7 @@ function ReviewCard({ r }) {
   const isLong = r.review.length > 600;
 
   return (
-    <div className="w-5xl flex flex-col  bg-gradient-to-r from-fuchsia-800 to-purple-800 mb-5 rounded-2xl text-white border-4 border-black">
+    <div className="w-5xl flex flex-col  bg-gradient-to-r from-fuchsia-800 to-purple-800 mb-5 rounded-2xl text-white border-4 border-black max-md:w-full">
       
       <div className="flex justify-around font-[fuenteTexto]">
         <p>{r.user.username}</p>

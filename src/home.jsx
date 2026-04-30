@@ -109,7 +109,38 @@ const nextAnime = () =>{
  setIndex((prev) => (prev + 1) % animes.length);
 }
 if (animes.length === 0) {
-    return <p>Cargando...</p>;
+    return (
+    <div>
+      <h2 className="text-purple-600 font-['Jim_Nightshade'] text-center text-5xl">
+        Best Airing Animes 2026
+      </h2>
+
+      <div className="w-full flex justify-center mb-2">
+        <div className="w-4/5">
+          <div className="flex items-center max-md:flex-col animate-pulse">
+            
+            <div className="bg-gray-700 w-48 h-80 rounded max-md:mt-3"></div>
+
+            <div className="ml-4 w-full">
+              <div className="bg-gray-700 h-6 w-48 mb-4 rounded max-md:mx-auto"></div>
+
+              <div className="flex max-md:flex-col max-md:items-center">
+                <div className="bg-gray-700 h-20 w-full rounded mb-2"></div>
+
+                <div className="bg-gray-700 h-40 w-24 rounded"></div>
+              </div>
+
+              <div className="flex items-center gap-4 mt-3 max-md:flex-col">
+                <div className="bg-gray-700 h-6 w-24 rounded"></div>
+                <div className="bg-gray-700 h-8 w-20 rounded"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
   }
 let anime = animes[index];
     return (
@@ -182,7 +213,38 @@ export function Manga() {
   };
 
   if (mangas.length === 0) {
-    return <p>Cargando...</p>;
+     return (
+    <div>
+      <h2 className="text-purple-600 font-['Jim_Nightshade'] text-center text-5xl max-md:text-3xl">
+        Best Airing Mangas 2026
+      </h2>
+
+      <div className="w-full flex justify-center mb-2">
+        <div className="w-4/5">
+          <div className="flex items-center max-md:flex-col animate-pulse">
+
+            <div className="bg-gray-700 w-48 h-80 rounded max-md:mt-3 max-md:w-40"></div>
+
+            <div className="ml-4 w-full max-md:ml-0">
+              <div className="bg-gray-700 h-6 w-48 mb-4 rounded max-md:mx-auto"></div>
+
+              <div className="flex max-md:flex-col max-md:items-center">
+                <div className="bg-gray-700 h-20 w-full rounded mb-2"></div>
+
+                <div className="bg-gray-700 h-40 w-24 rounded"></div>
+              </div>
+
+              <div className="flex items-center gap-4 mt-3 max-md:flex-col">
+                <div className="bg-gray-700 h-6 w-24 rounded"></div>
+                <div className="bg-gray-700 h-8 w-20 rounded"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  );
   }
 
   let manga = mangas[index];
